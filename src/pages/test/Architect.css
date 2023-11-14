@@ -1,0 +1,76 @@
+.header{
+    /*使得子元素模块垂直居中*/
+    display: flex;
+    align-items: center;        /*将子元素垂直居中*/
+    justify-content: space-between;
+    position: relative;
+    /*justify-content: center; !* 将子元素水平居中 *!*/
+
+    /*背景颜色*/
+    background-color: antiquewhite;
+}
+
+
+.header-search{
+    /*使得header-search-input垂直居中*/
+    display: flex;
+    align-items: center;
+
+
+    /*使得该模块水平居中*/
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    /*背景颜色*/
+    background-color: #f0f0f0;
+
+}
+/* 鼠标悬浮时修改背景颜色 */
+.header-search:hover {
+    background-color: #ffffff; /* 白色 */
+}
+
+
+.header-search-input {
+    border: 0;                 /* 取消未聚焦时的外边框 */
+    background-color: #f0f0f0; /* 灰色 */
+    position: relative;        /*将 .header-search-input 设置为相对定位的父容器*/
+}
+.header-search-input:hover {
+    background-color: #ffffff; /* 白色 */
+}
+.header-search-input:focus {
+    outline: none;             /* 取消聚焦时的外边框 */
+    background-color: #f0f0f0; /* 灰色 */
+}
+.header-search-input::placeholder {
+    /*结合父元素position: relative，对placeholder绝对定位实现垂直居中*/
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+
+.header-left-div{
+
+}
+
+
+.header-left-menu{
+    /*将元素呈现为内联元素，但是同时具有块元素的特性。这意味着元素在水平方向上按行排列，但是可以设置宽度和高度，且元素之间可以设置边距和填充。*/
+    display: inline-block;
+
+}
+
+
+.header-right-div{
+    /*把该模块推向右侧*/
+    margin-left: auto;
+}
+
+
+.header-right-menu{
+
+
+}
