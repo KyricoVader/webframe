@@ -1,5 +1,5 @@
 // 导入基础依赖库包
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useLayoutEffect, useMemo, useEffect } from 'react';
 // 导入全局字体设置
 import '../../common/global/fonts.css';
 // 导入架构型功能样式
@@ -7,14 +7,38 @@ import './Architect.css';
 // 导入响应式尺寸样式
 import './Responsive.css';
 // 导入自定义后的第三方UI组件库
-import {ResponsiveSearchIcon, ResponsiveIconButton} from "./MaterialUI";
+import {ResponsiveSearchIcon, ResponsiveIconButton } from "./MaterialUI";
+import {Link} from "react-router-dom";
 
 const Home = () => {
     const leftMenuItems = useMemo(
-        () => ['首页', '编程', '论坛', '阅读', '影视', '经济', '赵云', '关羽', '马超', '张鹏', '中心', '消息', '关注', '历史', '创作', '语言'],
+        () => [
+            {name: '首页', link: '/home'},
+            {name: '编程', link: '/index'},
+            {name: '论坛', link: '/index'},
+            {name: '阅读', link: '/index'},
+            {name: '影视', link: '/index'},
+            {name: '经济', link: '/index'},
+            {name: '赵云', link: '/index'},
+            {name: '关羽', link: '/index'},
+            {name: '马超', link: '/index'},
+            {name: '张鹏', link: '/index'},
+            {name: '中心', link: '/index'},
+            {name: '消息', link: '/index'},
+            {name: '关注', link: '/index'},
+            {name: '历史', link: '/index'},
+            {name: '创作', link: '/index'},
+            {name: '语言', link: '/index'},
+        ],
         []
     );
-    const rightMenuItems = ['中心', '消息', '关注', '历史', '创作', '语言'];
+    const rightMenuItems = [
+        {name: '中心', link: '/index'},
+        {name: '消息', link: '/index'},
+        {name: '关注', link: '/index'},
+        {name: '历史', link: '/index'},
+        {name: '创作', link: '/index'},
+    ];
 
     const headerLeftDivRef = useRef(null);
     const headerSearchRef = useRef(null);
@@ -22,13 +46,13 @@ const Home = () => {
     const [visibleItems, setVisibleItems] = useState([]);
     const [hiddenItems, setHiddenItems] = useState([]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         let times = 1;
 
-        const initializeMenuItems = () => {
-            setVisibleItems(leftMenuItems);
-            setHiddenItems([]);
-            console.log('Initialized data', hiddenItems, visibleItems);
+        const initializeMenuItems = async () => {
+            await setVisibleItems(leftMenuItems);
+            await setHiddenItems([]);
+            console.log('Initialized data', leftMenuItems, hiddenItems, visibleItems);
         };
 
         const updateMenuItems = () => {
@@ -36,6 +60,8 @@ const Home = () => {
             const searchRect = headerSearchRef.current.getBoundingClientRect();
             const leftDivRight = leftDivRect.right + 60;
             const searchLeft = searchRect.left;
+            console.log(leftDivRight, searchLeft)
+            console.log('updated data', leftMenuItems, hiddenItems, visibleItems);
 
             if (leftDivRight >= searchLeft) {
                 setVisibleItems(prevVisibleItems => prevVisibleItems.slice(0, -1));
@@ -50,44 +76,94 @@ const Home = () => {
         };
 
         const resizeToMenuItems = () => {
-            initializeMenuItems();
-            updateMenuItems();
+            initializeMenuItems().then(r => updateMenuItems());
         };
+
+        // Call the function once when the component mounts
+        resizeToMenuItems();
 
         window.addEventListener('resize', resizeToMenuItems);
 
         return () => {
             window.removeEventListener('resize', resizeToMenuItems);
         };
-    }, [leftMenuItems, hiddenItems, visibleItems]);
+    }, [ leftMenuItems ]);
+
+    const MoreMenu = () => {
+        return (
+            <div className="more-menu">
+                <div className="more-menu-column">
+                    <span>天地玄黄</span>
+                    <span>宇宙洪荒</span>
+                </div>
+                <div className="more-menu-column">
+                    <span>日月星辰</span>
+                    <span>难掩其光</span>
+                </div>
+            </div>
+        );
+    };
+    const [isMoreMenuVisible, setMoreMenuVisible] = useState(false);
+
+    useEffect(() => {
+        const handleMouseEnter = () => {
+            setMoreMenuVisible(true);
+        };
+
+        const handleMouseLeave = () => {
+            setMoreMenuVisible(false);
+        };
+
+        const headerLeftDiv = headerLeftDivRef.current;
+        headerLeftDiv.addEventListener('mouseenter', handleMouseEnter);
+        headerLeftDiv.addEventListener('mouseleave', handleMouseLeave);
+
+        return () => {
+            headerLeftDiv.removeEventListener('mouseenter', handleMouseEnter);
+            headerLeftDiv.removeEventListener('mouseleave', handleMouseLeave);
+        };
+    }, []);
 
     return (
-        <div className="header">
-            <div className="header-left-div" ref={headerLeftDivRef}>
-                {visibleItems.map((item, index) => (
-                    <span key={index} className="header-left-menu">
-                        {item}
-                    </span>
-                ))}
+        <div>
+            <div className="header">
+                <div className="header-left-div" ref={headerLeftDivRef}>
+                    {visibleItems.map((item, index) => (
+                        <Link to={item.link} key={index}>
+                        <span className="header-left-menu">
+                            {item.name}
+                        </span>
+                        </Link>
+                    ))}
 
-                {hiddenItems.length > 0 && (
-                    <span className="header-left-menu">
+                    {hiddenItems.length > 0 && (
+                        <span className="header-left-more">
                         更多
                     </span>
-                )}
+                    )}
+                </div>
+                <div className="header-search" ref={headerSearchRef}>
+                    <input className="header-search-input" placeholder="搜索中..." />
+                    <ResponsiveIconButton>
+                        <ResponsiveSearchIcon />
+                    </ResponsiveIconButton>
+                </div>
+                <div className="header-right-div">
+                    {rightMenuItems.map((item, index) => (
+                        <Link to={item.link} key={index}>
+                        <span  className="header-right-menu">
+                            {item.name}
+                        </span>
+                        </Link>
+                    ))}
+                    <span className="header-right-language">
+                    语言
+                </span>
+                </div>
             </div>
-            <div className="header-search" ref={headerSearchRef}>
-                <input className="header-search-input" placeholder="搜索中..." />
-                <ResponsiveIconButton>
-                    <ResponsiveSearchIcon />
-                </ResponsiveIconButton>
-            </div>
-            <div className="header-right-div">
-                {rightMenuItems.map((item, index) => (
-                    <span key={index} className="header-right-menu">{item}</span>
-                ))}
-            </div>
+            {isMoreMenuVisible && <MoreMenu />}
         </div>
+
     );
 };
 

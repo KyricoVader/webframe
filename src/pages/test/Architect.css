@@ -60,6 +60,7 @@
 .header-left-menu{
     /*将元素呈现为内联元素，但是同时具有块元素的特性。这意味着元素在水平方向上按行排列，但是可以设置宽度和高度，且元素之间可以设置边距和填充。*/
     display: inline-block;
+    color: black;
 
 }
 
@@ -71,6 +72,8 @@
 
 
 .header-right-menu{
-
+    /*同.header-left-menu中的属性说明*/
+    display: inline-block;
+    color: black;
 
 }
