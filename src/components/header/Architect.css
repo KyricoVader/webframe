@@ -4,6 +4,9 @@
     position: absolute;
     top: 100%;
     background-color: #f0f0f0;
+
+    /*设置页面优先级*/
+    z-index: 1;
 }
 
 .more-menu-span{
